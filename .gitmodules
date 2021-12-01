@@ -1,0 +1,3 @@
+[submodule "spotted-leopards"]
+	path = spotted-leopards
+	url = https://github.com/typelevel/spotted-leopards.git
