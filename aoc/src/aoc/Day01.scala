@@ -1,6 +1,7 @@
 package aoc
 
-import leopards.{*, given}
+import cats.instances.option.*
+import cats.syntax.apply.*
 
 object Day01:
   def increasing(depths: Seq[Int], n: Int): Int =

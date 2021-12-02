@@ -2,7 +2,8 @@ package aoc
 
 class Test01 extends munit.FunSuite:
 
-  private val sample = decode[Int] { """
+  private val sample = decode[Int] {
+    """
     |199
     |200
     |208
