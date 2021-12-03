@@ -14,31 +14,31 @@ object Day03:
     def decode(s: String): Diag =
       BitVector.fromValidBin(s)
 
-  opaque type Counter = IndexedSeq[Int]
+  private opaque type Counter = IndexedSeq[Int]
 
-  given Monoid[Counter] with
+  private object Counter:
+    def apply(diag: Diag): Counter =
+      diag.toIndexedSeq.map {
+        case true  => 1
+        case false => -1
+      }
+
+  private given Monoid[Counter] with
     val empty: Counter = IndexedSeq.empty
     def combine(x: Counter, y: Counter): Counter =
       if x.isEmpty then y
       else if y.isEmpty then x
       else x.zip(y).map(_ + _)
 
-  private def toCounter(diag: Diag): Counter =
-    diag.toIndexedSeq.map {
-      case true  => 1
-      case false => -1
-    }
-
-  private def powerConsumption(c: Counter): Int =
-    val (epsilon, gamma) = c.foldLeft((0, 0)) { case ((e, g), count) =>
-      if count > 0 then ((e << 1) + 1, g << 1)
-      else if count < 0 then (e << 1, (g << 1) + 1)
-      else (e << 1, g << 1)
-    }
-    epsilon * gamma
+  private def rating(counter: Counter, p: Int => Boolean): Int =
+    val bits = counter.map { c => if p(c) then '1' else '0' }.mkString
+    BitVector.fromValidBin(bits).toInt(signed = false)
 
   def process1(report: Seq[Diag]): Int =
-    powerConsumption(report.foldMap(toCounter))
+    val combined = report.foldMap(Counter.apply)
+    val epsilon  = rating(combined, _ > 0)
+    val gamma    = rating(combined, _ < 0)
+    epsilon * gamma
 
   @tailrec
   private def recurse(diags: Seq[Diag], i: Int, p: (Int, Int) => Boolean): Int = diags match
