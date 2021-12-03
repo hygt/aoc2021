@@ -10,6 +10,13 @@ object Day02:
     case Down(v: Int)
     case Forward(v: Int)
 
+  given Decoder[Command] with
+    def decode(s: String): Command = s.split(' ').toList match
+      case "up" :: v :: Nil      => Command.Up(v.toInt)
+      case "down" :: v :: Nil    => Command.Down(v.toInt)
+      case "forward" :: v :: Nil => Command.Forward(v.toInt)
+      case _                     => throw new IllegalArgumentException(s"Invalid input: $s")
+
   /** @param x
     *   horizontal position
     * @param y

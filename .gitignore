@@ -5,3 +5,8 @@
 ### Mill ###
 .bsp/
 out/
+
+### VS Code and Metals ###
+.bloop/
+.metals/
+.vscode/

@@ -17,10 +17,20 @@ object aoc extends ScalaModule with ScalafmtModule {
     "future"
   )
 
-  def ivyDeps = Agg(ivy"org.typelevel::cats-core:2.7.0")
+  def ivyDeps = Agg(
+    ivy"org.typelevel::cats-core:2.7.0",
+    ivy"org.scodec::scodec-core:2.1.0"
+  )
 
   object test extends Tests with TestModule.Munit with ScalafmtModule {
     def ivyDeps = Agg(ivy"org.scalameta::munit:1.0.0-M1")
   }
 
+  def repositoriesTask = sys.env.get("COURSIER_REPOSITORIES") match {
+    case Some(v) =>
+      val repos = v.split('|').map(MavenRepository.apply).toSeq
+      super.repositoriesTask.map { _ => repos }
+    case None =>
+      super.repositoriesTask
+  }
 }
