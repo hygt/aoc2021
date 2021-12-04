@@ -11,11 +11,11 @@ object Day02:
     case Forward(v: Int)
 
   given Decoder[Command] with
-    def decode(s: String): Command = s.split(' ').toList match
-      case "up" :: v :: Nil      => Command.Up(v.toInt)
-      case "down" :: v :: Nil    => Command.Down(v.toInt)
-      case "forward" :: v :: Nil => Command.Forward(v.toInt)
-      case _                     => throw new IllegalArgumentException(s"Invalid input: $s")
+    def decode(s: String): Either[String, Command] = s.split(' ').toList match
+      case "up" :: v :: Nil      => summon[Decoder[Int]].decode(v).map(i => Command.Up(i))
+      case "down" :: v :: Nil    => summon[Decoder[Int]].decode(v).map(i => Command.Down(i))
+      case "forward" :: v :: Nil => summon[Decoder[Int]].decode(v).map(i => Command.Forward(i))
+      case _                     => Left(s"unrecognized command $s")
 
   /** @param x
     *   horizontal position

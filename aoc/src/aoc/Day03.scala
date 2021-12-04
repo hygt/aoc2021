@@ -11,8 +11,8 @@ object Day03:
   opaque type Diag = BitVector
 
   given Decoder[Diag] with
-    def decode(s: String): Diag =
-      BitVector.fromValidBin(s)
+    def decode(s: String): Either[String, Diag] =
+      BitVector.fromBinDescriptive(s)
 
   private opaque type Counter = IndexedSeq[Int]
 
