@@ -15,12 +15,12 @@ object Day04:
 
   private type Winner = (Draw, Int)
 
-  case class Bingo(input: Draw, boards: Seq[Board]) {
+  case class Bingo(input: Draw, boards: Seq[Board]):
 
     /** Builds the initial index of winning bingo combinations and their corresponding board number ID.
       */
     private val initial: Index =
-      boards.zipWithIndex.foldMap { case (board, id) =>
+      boards.zipWithIndex.foldMap { (board, id) =>
         val rows = board.map(row => row.toSet -> id).toMap
         val cols = board.transpose.map(col => col.toSet -> id).toMap
         rows ++ cols
@@ -58,8 +58,6 @@ object Day04:
           case current => (draw, current, remove(index, current))
       }
       score.tupled(w.last)
-
-  }
 
   given Decoder[Bingo] with
     def decode(s: String): Either[String, Bingo] = try
