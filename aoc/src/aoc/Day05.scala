@@ -7,30 +7,23 @@ object Day05:
 
   case class Segment(x1: Int, y1: Int, x2: Int, y2: Int):
 
-    override def toString: String =
-      s"$x1,$y1 -> $x2,$y2"
+    def straight: Boolean = x1 == x2 || y1 == y2
 
-    def coords(diagonals: Boolean): Seq[(Int, Int)] =
-      extension (a: Int)
-        infix def comp(b: Int): Boolean =
-          if diagonals then a <= b
-          else a == b
+    override def toString: String = s"$x1,$y1 -> $x2,$y2"
 
-      if (x1 comp x2) && y1 < y2 then (x1 to x2).zipAll(y1 to y2, x1, y1)
-      else if (x1 comp x2) && y2 < y1 then (x1 to x2).zipAll(y1 to y2 by -1, x1, y1)
-      else if x2 < x1 && (y1 comp y2) then (x1 to x2 by -1).zipAll(y1 to y2, x1, y1)
-      else if x1 < x2 && (y1 comp y2) then (x1 to x2).zipAll(y1 to y2, x1, y1)
-      else if x2 < x1 && (y2 comp y1) then (x1 to x2 by -1).zipAll(y1 to y2 by -1, x1, y1)
-      else Seq.empty
+    def coords: Seq[(Int, Int)] =
+      val xs = x1 to x2 by (if x1 < x2 then 1 else -1)
+      val ys = y1 to y2 by (if y1 < y2 then 1 else -1)
+      xs.zipAll(ys, x1, y1)
 
   def process(segments: Seq[Segment], diagonals: Boolean): Int =
-    val builder = CSCMatrix.Builder[Int](-1, -1)
+    val grid = CSCMatrix.Builder[Int](-1, -1)
     for {
       segment <- segments
-      (r, c)  <- segment.coords(diagonals)
-    } builder.add(r, c, 1)
-    val matrix = builder.result()
-    matrix.findAll(_ > 1).size
+      if diagonals || segment.straight
+      (r, c) <- segment.coords
+    } grid.add(r, c, 1)
+    grid.result().findAll(_ > 1).size
 
   given Decoder[Segment] with
     private val pattern = """(\d+),(\d+) -> (\d+),(\d+)""".r
