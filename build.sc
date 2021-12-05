@@ -25,6 +25,8 @@ object aoc extends ScalaModule with ScalafmtModule {
 
   object test extends Tests with TestModule.Munit with ScalafmtModule {
     def ivyDeps = Agg(ivy"org.scalameta::munit:1.0.0-M1")
+
+    def day(d: Int) = super.testOnly(f"aoc.Test$d%02d")
   }
 
   def repositoriesTask = sys.env.get("COURSIER_REPOSITORIES") match {
