@@ -1,6 +1,7 @@
 package aoc
 
 import breeze.linalg.CSCMatrix
+
 import scala.util.control.NonFatal
 
 object Day05:
@@ -15,6 +16,15 @@ object Day05:
       val xs = x1 to x2 by (if x1 < x2 then 1 else -1)
       val ys = y1 to y2 by (if y1 < y2 then 1 else -1)
       xs.zipAll(ys, x1, y1)
+
+  def naive(segments: Seq[Segment], diagonals: Boolean): Int =
+    val positions = for {
+      segment <- segments
+      if diagonals || segment.straight
+      coord <- segment.coords
+    } yield coord
+    val overlapping = positions.diff(positions.distinct)
+    overlapping.distinct.size
 
   def process(segments: Seq[Segment], diagonals: Boolean): Int =
     val grid = CSCMatrix.Builder[Int](-1, -1)
