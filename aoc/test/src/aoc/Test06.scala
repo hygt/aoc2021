@@ -4,9 +4,9 @@ import aoc.Day06.{*, given}
 
 class Test06 extends munit.FunSuite:
 
-  private def sample: FishCounter = "3,4,3,1,2".decoded
+  private val sample: FishCounter = "3,4,3,1,2".decoded
 
-  private def input = entire[FishCounter](6)
+  private val input = entire[FishCounter](6)
 
   test("part 1 - sample") {
     assertEquals(Day06.process(sample, 18), 26L)

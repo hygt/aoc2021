@@ -8,8 +8,8 @@ object Day06:
 
   opaque type Fish = Vector[Int]
 
-  /** Mutable fish counter */
-  opaque type FishCounter = Array[Long]
+  /** Immutable fish counter */
+  opaque type FishCounter = IArray[Long]
 
   private def slow(i: Int): State[Vector[Int], Unit] = State.modify { fish =>
     fish
@@ -20,14 +20,10 @@ object Day06:
       }
   }
 
-  private def fast(day: Int): State[FishCounter, Unit] = State.modify { counter =>
-    val yesterday = day       % 9
-    val today     = (day + 1) % 9
-
-    val mature = counter(yesterday) // today's mature fish were yesterday's '1'
-    counter((today + 6) % 9) += mature // mature fish become '6'
-
-    counter
+  private def fast(yesterday: Int): State[FishCounter, Unit] = State.modify { counter =>
+    val mature = counter(yesterday % 9)
+    val six    = (yesterday + 7) % 9
+    counter.updated(six, counter(six) + mature)
   }
 
   def naive(fish: Fish, n: Int): Int =
@@ -48,5 +44,5 @@ object Day06:
     (1 to 8).foreach { day =>
       counter(day) = fish.count(_ == day)
     }
-    counter
+    IArray.unsafeFromArray(counter)
   }
