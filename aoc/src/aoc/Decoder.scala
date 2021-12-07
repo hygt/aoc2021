@@ -1,5 +1,8 @@
 package aoc
 
+import cats.instances.vector.*
+import cats.syntax.traverse.*
+
 trait Decoder[T]:
 
   private val outer = this
@@ -24,6 +27,13 @@ object Decoder:
 
   given Decoder[Int] with
     def decode(s: String): Either[String, Int] = s.toIntOption.toRight(s"$s is not a integer")
+
+  given Decoder[Vector[Int]] with
+    def decode(s: String): Either[String, Vector[Int]] =
+      s.splitTrim(",")
+        .map(_.toIntOption)
+        .sequence
+        .toRight("failed to parse integer vector")
 
   /** Null-safe string splitter.
     *

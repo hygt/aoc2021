@@ -2,11 +2,13 @@ package aoc
 
 import aoc.Decoder.splitTrim
 import cats.data.State
-import cats.implicits.*
+import cats.instances.seq.*
+import cats.syntax.foldable.*
+import cats.syntax.traverse.*
 
 object Day06:
 
-  opaque type Fish = Vector[Int]
+  type Fish = Vector[Int]
 
   /** Immutable fish counter */
   opaque type FishCounter = IArray[Long]
@@ -32,14 +34,7 @@ object Day06:
   def process(counter: FishCounter, n: Int): Long =
     Seq.range(0, n).traverse_(fast).runS(counter).value.sum
 
-  given Decoder[Fish] with
-    def decode(s: String): Either[String, Fish] =
-      s.splitTrim(",")
-        .map(_.toIntOption)
-        .sequence
-        .toRight("failed to parse fish")
-
-  given Decoder[FishCounter] = summon[Decoder[Fish]].map { fish =>
+  given Decoder[FishCounter] = summon[Decoder[Vector[Int]]].map { fish =>
     val counter = new Array[Long](9)
     (1 to 8).foreach { day =>
       counter(day) = fish.count(_ == day)

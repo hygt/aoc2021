@@ -14,7 +14,7 @@ object Day03:
     def decode(s: String): Either[String, Diag] =
       BitVector.fromBinDescriptive(s)
 
-  private opaque type Counter = IndexedSeq[Int]
+  private type Counter = IndexedSeq[Int]
 
   private object Counter:
     def apply(diag: Diag): Counter =
