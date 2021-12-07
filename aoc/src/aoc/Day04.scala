@@ -13,51 +13,50 @@ object Day04:
 
   private type Index = Map[Set[Int], Int]
 
-  private type Winner = (Draw, Int)
+  /** Index of the last number drawn -> board ID */
+  private type Winner = (Int, Int)
 
   case class Bingo(input: Draw, boards: Seq[Board]):
 
-    /** Builds the initial index of winning bingo combinations and their corresponding board number ID.
+    /** Builds an index of winning bingo combinations and their corresponding board number ID.
       */
-    private val initial: Index =
+    private val index: Index =
       boards.zipWithIndex.foldMap { (board, id) =>
         val rows = board.map(row => row.toSet -> id).toMap
         val cols = board.transpose.map(col => col.toSet -> id).toMap
         rows ++ cols
       }
 
-    private def draws: Seq[Draw] =
-      Seq.range(1, input.size + 1).map(input.take)
+    private def score(i: Int, board: Int): Int =
+      val draw = input.take(i + 1)
+      input(i) * boards(board).flatten.diff(draw).sum
 
-    private def score(draw: Draw, id: Int): Int =
-      draw.last * boards(id).flatten.diff(draw).sum
-
-    private def winning(index: Index)(draw: Draw): Seq[Winner] =
+    private def winning(i: Int): Seq[Winner] =
+      val draw = input.take(i + 1)
       index.keys
         .filter(_.subsetOf(draw.toSet))
         .flatMap(index.get)
-        .map(id => draw -> id)
+        .map(id => i -> id)
         .toSeq
 
     def first: Int =
-      val winner = draws.map(winning(initial)).collectFirst { case Seq(first) =>
-        first
-      }
+      val winner = Seq
+        .range(0, input.size)
+        .map(winning)
+        .collectFirst { case Seq(first) =>
+          first
+        }
       score.tupled(winner.get)
 
-    private def remove(index: Index, winners: Seq[Winner]): Index =
-      val ids = winners.map((_, id) => id)
-      index.filterNot((_, id) => ids.contains(id))
-
     def last: Int =
-      val (_, w, _) = input.foldLeft((Seq.empty[Int], Seq.empty[Winner], initial)) { (acc, number) =>
-        val (prev, winners, index) = acc
-        val draw                   = prev :+ number
-        winning(index)(draw) match
-          case Nil     => (draw, winners, index)
-          case current => (draw, current, remove(index, current))
+      val w = Seq.range(0, input.size).scanLeft(Seq.empty[Winner]) { (acc, number) =>
+        val prev  = acc.map { (_, board) => board }
+        val `new` = winning(number).filterNot { (_, board) => prev.contains(board) }
+        acc ++ `new`
       }
-      score.tupled(w.last)
+      w.last match
+        case _ :+ last => score.tupled(last)
+        case _         => throw new IllegalStateException
 
   given Decoder[Bingo] with
     def decode(s: String): Either[String, Bingo] = try
