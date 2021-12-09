@@ -24,9 +24,8 @@ object Day02:
     * @param a
     *   aim
     */
-  case class Position(x: Int, y: Int, a: Int) {
+  case class Position(x: Int, y: Int, a: Int):
     def result: Int = x * y
-  }
 
   final val Zero = Position(0, 0, 0)
 
