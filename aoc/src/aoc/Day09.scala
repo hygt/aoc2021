@@ -5,10 +5,7 @@ import scala.util.control.NonFatal
 object Day09:
 
   case class Point(x: Int, y: Int):
-    def up: Point    = Point(x, y - 1)
-    def down: Point  = Point(x, y + 1)
-    def left: Point  = Point(x - 1, y)
-    def right: Point = Point(x + 1, y)
+    def adjacent: Seq[Point] = Seq(Point(x, y - 1), Point(x, y + 1), Point(x - 1, y), Point(x + 1, y))
 
   private def minima(heights: Seq[Vector[Int]]): Seq[Point] =
     val l = heights.size
@@ -35,11 +32,10 @@ object Day09:
       case _ if visited(p) || heights(p.y)(p.x) == 9 =>
         (0, visited + p)
       case _ =>
-        val (up, vup)       = recurse(p.up, visited + p)
-        val (down, vdown)   = recurse(p.down, vup)
-        val (left, vleft)   = recurse(p.left, vdown)
-        val (right, vright) = recurse(p.right, vleft)
-        (1 + up + down + left + right, vright)
+        p.adjacent.foldLeft((1, visited + p)) { case ((c, v), p) =>
+          val (cc, vv) = recurse(p, v)
+          (c + cc, vv)
+        }
 
     val (count, _) = recurse(start, Set.empty)
     count
