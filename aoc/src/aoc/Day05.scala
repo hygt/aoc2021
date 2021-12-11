@@ -18,21 +18,21 @@ object Day05:
       xs.zipAll(ys, x1, y1)
 
   def naive(segments: Seq[Segment], diagonals: Boolean): Int =
-    val positions = for {
+    val positions = for
       segment <- segments
       if diagonals || segment.straight
       coord <- segment.coords
-    } yield coord
+    yield coord
     val overlapping = positions.diff(positions.distinct)
     overlapping.distinct.size
 
   def process(segments: Seq[Segment], diagonals: Boolean): Int =
     val grid = CSCMatrix.Builder[Int](-1, -1)
-    for {
+    for
       segment <- segments
       if diagonals || segment.straight
       (r, c) <- segment.coords
-    } grid.add(r, c, 1)
+    do grid.add(r, c, 1)
     grid.result().findAll(_ > 1).size
 
   given Decoder[Segment] with

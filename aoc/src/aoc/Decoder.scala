@@ -45,7 +45,6 @@ object Decoder:
   extension (s: String)
     def splitTrim(regex: String): Vector[String] =
       val tokens = s.split(regex).nn
-      tokens.toVector.flatMap[String] {
-        case s: String => Some(s.trim.nn)
-        case _         => None
+      tokens.toVector.collect {
+        case s: String if !s.isBlank => s.trim.nn
       }
