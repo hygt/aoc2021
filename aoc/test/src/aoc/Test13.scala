@@ -32,17 +32,15 @@ class Test13 extends munit.FunSuite:
   private val input = entire[Paper](13)
 
   test("part 1 - sample") {
-    assertEquals(sample.step(1), 17)
+    assertEquals(sample.run1, 17)
   }
 
-  test("part 1 - result: " + input.step(1)) {}
+  test("part 1 - result: " + input.run1) {}
 
   test("part 2 - sample") {
-    sample.step()
-    println(sample)
+    println(sample.run2)
   }
 
   test("part 2 - result") {
-    input.step()
-    println(input)
+    println(input.run2)
   }

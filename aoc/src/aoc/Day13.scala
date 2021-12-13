@@ -16,60 +16,44 @@ object Day13:
     /** Like `splitAt` but discards the midpoint, zips elements in the first part that overlap those in the reversed
       * second.
       */
-    def splitFlipZip(n: Int) =
+    def splitFlipZip(n: Int): Seq[(Int, Int)] =
       val first  = range.take(n)
       val second = range.drop(n + 1)
       val diff   = first.size - second.size
       if diff > 0 then first.drop(diff).zip(second.reverse)
       else first.zip(second.reverse.drop(-diff))
 
-  case class Paper(points: Seq[Point], folds: Seq[Fold]):
-    private var maxX                        = 0
-    private var maxY                        = 0
-    private var grid: Array[Array[Boolean]] = Array.empty
+  case class Paper(points: Set[Point], folds: Seq[Fold]):
 
-    private def init(): Unit =
-      maxX = points.map(_.x).max
-      maxY = points.map(_.y).max
-      grid = Array.fill(maxY + 1)(Array.fill(maxX + 1)(false))
-      points.foreach(p => grid(p.y)(p.x) = true)
-
-    private def countAll: Int =
-      grid.map(_.count(identity)).sum
-
-    private def clearAfter(x: Int = 0, y: Int = 0): Unit =
-      for
-        i <- x to maxX
-        j <- y to maxY
-      do grid(j)(i) = false
-
-    def step(n: Int = folds.size): Int =
-      init()
-      folds.take(n).foreach {
-        case Fold.X(x) =>
-          for
-            y        <- 0 to maxY
-            (x1, x2) <- (0 to maxX).splitFlipZip(x)
-          do grid(y)(x1) |= grid(y)(x2)
-          clearAfter(x = x)
-          maxX = x - 1
-        case Fold.Y(y) =>
-          for
-            x        <- 0 to maxX
-            (y1, y2) <- (0 to maxY).splitFlipZip(y)
-          do grid(y1)(x) |= grid(y2)(x)
-          clearAfter(y = y)
-          maxY = y - 1
+    private def fold(n: Int): (Set[Point], Point) =
+      val boundaries = Point(points.map(_.x).max, points.map(_.y).max)
+      folds.take(n).foldLeft((points, boundaries)) { case ((set, max), fold) =>
+        fold match
+          case Fold.X(x) =>
+            val folded = for
+              y        <- 0 to max.y
+              (x1, x2) <- (0 to max.x).splitFlipZip(x)
+              if set(Point(x1, y)) || set(Point(x2, y))
+            yield Point(x1, y)
+            (folded.toSet, max.copy(x = x - 1))
+          case Fold.Y(y) =>
+            val folded = for
+              x        <- 0 to max.x
+              (y1, y2) <- (0 to max.y).splitFlipZip(y)
+              if set(Point(x, y1)) || set(Point(x, y2))
+            yield Point(x, y1)
+            (folded.toSet, max.copy(y = y - 1))
       }
-      countAll
 
-    override def toString: String =
-      grid
-        .take(maxY + 1)
-        .map { line =>
-          line.take(maxX + 1).map(if _ then '█' else ' ').mkString
-        }
-        .mkString("\n")
+    def run1: Int =
+      val (folded, _) = fold(1)
+      folded.size
+
+    def run2: String =
+      val (folded, max) = fold(folds.size)
+      val grid          = Array.fill(max.y + 1)(Array.fill(max.x + 1)(' '))
+      folded.foreach(p => grid(p.y)(p.x) = '█')
+      grid.map(_.mkString).mkString("\n")
 
   end Paper
 
@@ -86,6 +70,6 @@ object Day13:
             case s"fold along y=$y" => Fold.Y(y.toInt)
             case s                  => throw new IllegalArgumentException(s"unrecognized fold $s")
           }
-          Right(Paper(points, folds))
+          Right(Paper(points.toSet, folds))
         case _ => Left("not a paper")
     catch case NonFatal(e) => Left(e.getMessage.nn)
