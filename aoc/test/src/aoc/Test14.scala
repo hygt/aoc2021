@@ -36,6 +36,7 @@ class Test14 extends munit.FunSuite:
 
   test("part 2 - sample") {
     assertEquals(sample.run(40), 2188189693529L)
+    assertEquals(sample.linalg(40), 2188189693529L)
   }
 
   test("part 2 - result: " + input.run(40)) {}
