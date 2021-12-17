@@ -1,4 +1,3 @@
-import coursier.maven.MavenRepository
 import mill._, scalalib._, scalafmt._
 
 object aoc extends ScalaModule with ScalafmtModule {
@@ -18,9 +17,10 @@ object aoc extends ScalaModule with ScalafmtModule {
   )
 
   def ivyDeps = Agg(
-    ivy"org.typelevel::cats-core:2.7.0",
     ivy"org.scalanlp::breeze:2.0",
-    ivy"org.scodec::scodec-core:2.1.0"
+    ivy"org.scodec::scodec-core:2.1.0",
+    ivy"org.typelevel::cats-core:2.7.0",
+    ivy"org.typelevel::cats-parse:0.3.6"
   )
 
   object test extends Tests with TestModule.Munit with ScalafmtModule {
@@ -28,12 +28,4 @@ object aoc extends ScalaModule with ScalafmtModule {
 
     def day(d: Int) = super.testOnly(f"aoc.Test$d%02d")
   }
-
-  // def repositoriesTask = sys.env.get("COURSIER_REPOSITORIES") match {
-  //   case Some(v) =>
-  //     val repos = v.split('|').map(MavenRepository.apply).toSeq
-  //     super.repositoriesTask.map { _ => repos }
-  //   case None =>
-  //     super.repositoriesTask
-  // }
 }
