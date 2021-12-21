@@ -1,6 +1,5 @@
 package aoc
 
-import aoc.Day09.Point
 import aoc.Decoder.splitTrim
 
 import scala.util.control.NonFatal
@@ -16,7 +15,7 @@ object Day20:
     private val maxY = pixels.map(_.y).max
 
     private def lit(x: Int, y: Int): Boolean =
-      val border = outside && algo.head // border is lit
+      val border = outside && algo.head // is border lit?
       val binary = for
         j <- y - 1 to y + 1
         i <- x - 1 to x + 1
