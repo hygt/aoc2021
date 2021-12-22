@@ -1,5 +1,6 @@
 package aoc
 
+import cats.instances.long.*
 import cats.instances.map.*
 import cats.instances.seq.*
 import cats.syntax.foldable.*
@@ -9,12 +10,12 @@ import scala.annotation.tailrec
 object Day21:
 
   case class Position(one: Int, two: Int):
-    def move(d: Int, turn: Boolean) =
+    def move(d: Int, turn: Boolean): Position =
       if turn then Position((one + d - 1) % 10 + 1, two)
       else Position(one, (two + d - 1)    % 10 + 1)
 
   case class Points(one: Int, two: Int):
-    def inc(position: Position, turn: Boolean) =
+    def inc(position: Position, turn: Boolean): Points =
       if turn then Points(one + position.one, two)
       else Points(one, two + position.two)
 

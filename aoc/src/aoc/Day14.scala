@@ -2,6 +2,7 @@ package aoc
 
 import aoc.Decoder.splitTrim
 import breeze.linalg.{DenseMatrix, DenseVector}
+import cats.instances.long.*
 import cats.instances.map.*
 import cats.instances.seq.*
 import cats.syntax.foldable.*
