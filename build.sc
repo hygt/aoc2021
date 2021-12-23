@@ -20,7 +20,8 @@ object aoc extends ScalaModule with ScalafmtModule {
   def ivyDeps = Agg(
     ivy"org.typelevel::cats-core:2.7.0",
     ivy"org.scalanlp::breeze:2.0",
-    ivy"org.scodec::scodec-core:2.1.0"
+    ivy"org.scodec::scodec-core:2.1.0",
+    ivy"org.typelevel::cats-effect:3.3.1"
   )
 
   object test extends Tests with TestModule.Munit with ScalafmtModule {

@@ -1,18 +1,18 @@
 package aoc
 
 import aoc.Decoder.splitTrim
-import breeze.linalg.DenseMatrix
-import breeze.linalg.DenseVector
-import breeze.linalg.manhattanDistance
+import breeze.linalg.{DenseMatrix, DenseVector, manhattanDistance}
+import cats.effect.*
+import cats.effect.implicits.*
+import cats.effect.unsafe.implicits.global
 import cats.instances.either.*
+import cats.instances.seq.*
 import cats.instances.vector.*
+import cats.syntax.foldable.*
 import cats.syntax.traverse.*
 
+import scala.annotation.tailrec
 import scala.collection.mutable
-import scala.concurrent.Await
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import scala.concurrent.duration.*
 import scala.util.control.NonFatal
 
 object Day19:
@@ -52,26 +52,31 @@ object Day19:
     DenseMatrix((0, 0, -1), (-1, 0, 0), (0, 1, 0))
   )
 
-  private def align(beacons: VectorSet, rotated: VectorSet): Future[Option[(VectorSet, Point)]] = Future {
-    val found = for
+  case class Result(vs: VectorSet, p: Point) extends Exception:
+    def toOption: Option[(VectorSet, Point)] = Some(vs -> p)
+
+  private def align(beacons: VectorSet)(rotated: VectorSet): IO[Unit] = IO {
+    for
       v1 <- beacons
       v2 <- rotated
       distance   = v1 - v2
       translated = rotated.map(_ + distance)
       if translated.intersect(beacons).size >= 12
-    yield translated -> distance
-    found.headOption
+    do throw Result(translated, distance)
+    ()
   }
 
-  /** Using Futures as a cheap way to parallelize this step. Short-circuiting on the first success would be better. */
   private def align(beacons: VectorSet, report: Report): Option[(VectorSet, Point)] =
-    val res = Future
-      .traverse(report.rotate) { rotated =>
-        align(beacons, rotated)
-      }
-      .map(_.flatten.headOption)
-    Await.result(res, 1.minute)
+    def extract(t: Throwable): Option[(VectorSet, Point)] = t match
+      case r: Result => r.toOption
+      case _         => None
+    val res =
+      IO
+        .parTraverseN(rotations.size)(report.rotate)(align(beacons))
+        .redeem(extract, _ => None)
+    res.unsafeRunSync()
 
+  @tailrec
   private def loop(aligned: VectorSet, found: VectorSet, tail: Set[Report]): (VectorSet, VectorSet) =
     val (bs, ss, rs) = tail.foldLeft((aligned, found, Set.empty[Report])) { case ((beacons, scanners, rest), report) =>
       align(beacons, report) match
