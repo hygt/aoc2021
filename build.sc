@@ -29,11 +29,11 @@ object aoc extends ScalaModule with ScalafmtModule {
     def day(d: Int) = super.testOnly(f"aoc.Test$d%02d")
   }
 
-  def repositoriesTask = sys.env.get("COURSIER_REPOSITORIES") match {
-    case Some(v) =>
-      val repos = v.split('|').map(MavenRepository.apply).toSeq
-      super.repositoriesTask.map { _ => repos }
-    case None =>
-      super.repositoriesTask
-  }
+  // def repositoriesTask = sys.env.get("COURSIER_REPOSITORIES") match {
+  //   case Some(v) =>
+  //     val repos = v.split('|').map(MavenRepository.apply).toSeq
+  //     super.repositoriesTask.map { _ => repos }
+  //   case None =>
+  //     super.repositoriesTask
+  // }
 }
