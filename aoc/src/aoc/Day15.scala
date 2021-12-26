@@ -53,7 +53,7 @@ object Day15:
 
   given Decoder[Grid] with
     def decode(s: String): Either[String, Grid] = try
-      val grid = s.splitTrim("""\n""").map(_.toCharArray.nn.map(_ - '0').toVector)
+      val grid = s.splitTrim("""\n""").map(_.toCharArray.nn.map(_.asDigit).toVector)
       assert(grid.size == grid.head.size)
       Right(Grid(grid))
     catch case NonFatal(e) => Left(e.getMessage.nn)

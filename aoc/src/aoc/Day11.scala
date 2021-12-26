@@ -95,7 +95,7 @@ object Day11:
     def decode(s: String): Either[String, Grid] = try
       val lines = s
         .splitTrim("""\n""")
-        .map(_.toCharArray.nn.map(_ - '0').toSeq)
+        .map(_.toCharArray.nn.map(_.asDigit).toSeq)
       assert(lines.size == GridSize)
       assert(lines.head.size == GridSize)
       Right(Grid(lines))

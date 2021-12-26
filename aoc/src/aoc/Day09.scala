@@ -46,5 +46,5 @@ object Day09:
     biggest3.product
 
   given Decoder[Vector[Int]] with
-    def decode(s: String): Either[String, Vector[Int]] = try Right(s.toCharArray.nn.map(_ - '0').toVector)
+    def decode(s: String): Either[String, Vector[Int]] = try Right(s.toCharArray.nn.map(_.asDigit).toVector)
     catch case NonFatal(e) => Left(e.getMessage.nn)
