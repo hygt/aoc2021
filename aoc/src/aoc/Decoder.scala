@@ -35,14 +35,14 @@ object Decoder:
         .sequence
         .toRight("failed to parse integer vector")
 
-  /** Null-safe string splitter.
-    *
-    * @param regex
-    *   the separator regex
-    * @return
-    *   a vector of tokens, trimmed
-    */
   extension (s: String)
+    /** Null-safe string splitter.
+      *
+      * @param regex
+      *   the separator regex
+      * @return
+      *   a vector of tokens, trimmed
+      */
     def splitTrim(regex: String): Vector[String] =
       val tokens = s.split(regex).nn
       tokens.toVector.collect {

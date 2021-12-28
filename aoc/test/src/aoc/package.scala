@@ -18,4 +18,6 @@ def entire[T: Decoder](day: Int): T =
   Source
     .fromResource(f"$day%02d.txt", getClass.getClassLoader.nn)
     .mkString
+    .trim
+    .nn
     .decoded

@@ -3,19 +3,18 @@ package aoc
 import cats.parse.Accumulator.nonEmptyListAccumulator0
 import cats.parse.Parser as P
 import cats.syntax.apply.*
-import scodec.bits.BitVector
 
 object Day16:
 
-  def part1(hex: String): Int =
+  def part1(hex: HexString): Int =
     Parsers.packet
-      .parse(BitVector.fromValidHex(hex).toBin)
+      .parse(hex.toBin)
       .map { case (padding, packet) => packet.versionNumbers }
       .getOrElse(-1)
 
-  def part2(hex: String): Long =
+  def part2(hex: HexString): Long =
     Parsers.packet
-      .parse(BitVector.fromValidHex(hex).toBin)
+      .parse(hex.toBin)
       .map { case (padding, packet) => packet.eval }
       .getOrElse(-1L)
 

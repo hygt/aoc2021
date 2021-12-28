@@ -1,10 +1,8 @@
 package aoc
 
-import aoc.Day03.Diag
-
 class Test03 extends munit.FunSuite:
 
-  private val sample = decode[Diag] {
+  private val sample = decode[String] {
     """
      |00100
      |11110
@@ -21,7 +19,7 @@ class Test03 extends munit.FunSuite:
     """.stripMargin
   }
 
-  private val input = load[Diag](3)
+  private val input = load[String](3)
 
   test("part 1 - sample") {
     assertEquals(Day03.process1(sample), 198)

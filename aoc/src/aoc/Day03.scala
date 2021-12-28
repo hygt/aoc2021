@@ -2,25 +2,20 @@ package aoc
 
 import cats.Monoid
 import cats.implicits.*
-import scodec.bits.BitVector
 
 import scala.annotation.tailrec
 
 object Day03:
 
-  opaque type Diag = BitVector
-
-  given Decoder[Diag] with
-    def decode(s: String): Either[String, Diag] =
-      BitVector.fromBinDescriptive(s)
+  type Diag = String
 
   private type Counter = IndexedSeq[Int]
 
   private object Counter:
     def apply(diag: Diag): Counter =
-      diag.toIndexedSeq.map {
-        case true  => 1
-        case false => -1
+      diag.map {
+        case '1' => 1
+        case '0' => -1
       }
 
   private given Monoid[Counter] with
@@ -32,7 +27,7 @@ object Day03:
 
   private def rating(counter: Counter, p: Int => Boolean): Int =
     val bits = counter.map { c => if p(c) then '1' else '0' }.mkString
-    BitVector.fromValidBin(bits).toInt(signed = false)
+    Integer.parseUnsignedInt(bits, 2)
 
   def process1(report: Seq[Diag]): Int =
     val combined = report.foldMap(Counter.apply)
@@ -43,9 +38,9 @@ object Day03:
   @tailrec
   private def recurse(diags: Seq[Diag], i: Int, p: (Int, Int) => Boolean): Int = diags match
     case Nil         => throw new IllegalStateException
-    case Seq(result) => result.toInt(signed = false)
+    case Seq(result) => Integer.parseUnsignedInt(result, 2)
     case _ =>
-      val (left, right) = diags.partition(_.get(i))
+      val (left, right) = diags.partition(_.charAt(i) == '1')
       if p(left.size, right.size) then recurse(left, i + 1, p)
       else recurse(right, i + 1, p)
 
