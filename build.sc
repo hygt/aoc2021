@@ -2,7 +2,7 @@ import mill._, scalalib._, scalafmt._
 
 object aoc extends ScalaModule with ScalafmtModule {
 
-  def scalaVersion = "3.1.0"
+  def scalaVersion = "3.1.2"
   
   def scalacOptions = Seq(
     "-language:existentials,experimental.macros,higherKinds,implicitConversions,postfixOps",
