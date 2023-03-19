@@ -2,7 +2,6 @@ package aoc
 
 import aoc.Day24.Instruction.*
 
-import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.util.control.NonFatal
 

@@ -8,7 +8,6 @@ import cats.instances.either.*
 import cats.instances.vector.*
 import cats.syntax.traverse.*
 
-import scala.collection.mutable
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -52,16 +51,15 @@ object Day19:
     DenseMatrix((0, 0, -1), (-1, 0, 0), (0, 1, 0))
   )
 
-  private def align(beacons: VectorSet, rotated: VectorSet): Future[Option[(VectorSet, Point)]] = Future {
-    val found = for
-      v1 <- beacons
-      v2 <- rotated
-      distance   = v1 - v2
-      translated = rotated.map(_ + distance)
-      if translated.intersect(beacons).size >= 12
-    yield translated -> distance
-    found.headOption
-  }
+  private def align(beacons: VectorSet, rotated: VectorSet): Future[Option[(VectorSet, Point)]] = Future:
+      val found = for
+        v1 <- beacons
+        v2 <- rotated
+        distance   = v1 - v2
+        translated = rotated.map(_ + distance)
+        if translated.intersect(beacons).size >= 12
+      yield translated -> distance
+      found.headOption
 
   /** Using Futures as a cheap way to parallelize this step. Short-circuiting on the first success would be better. */
   private def align(beacons: VectorSet, report: Report): Option[(VectorSet, Point)] =

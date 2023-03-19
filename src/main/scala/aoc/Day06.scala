@@ -1,10 +1,8 @@
 package aoc
 
-import aoc.Decoder.splitTrim
 import cats.data.State
 import cats.instances.seq.*
 import cats.syntax.foldable.*
-import cats.syntax.traverse.*
 
 object Day06:
 
@@ -16,10 +14,9 @@ object Day06:
   private def slow(i: Int): State[Vector[Int], Unit] = State.modify { fish =>
     fish
       .map(_ - 1)
-      .flatMap {
+      .flatMap:
         case -1 => Vector(6, 8)
         case n  => Vector(n)
-      }
   }
 
   private def fast(yesterday: Int): State[FishCounter, Unit] = State.modify { counter =>

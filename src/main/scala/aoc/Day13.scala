@@ -61,15 +61,17 @@ object Day13:
     def decode(s: String): Either[String, Paper] = try
       s.splitTrim("""\n\n""") match
         case Vector(head, tail) =>
-          val points = head.splitTrim("""\n""").map {
-            case s"$x,$y" => Point(x.toInt, y.toInt)
-            case s        => throw new IllegalArgumentException(s"unrecognized point $s")
-          }
-          val folds = tail.splitTrim("""\n""").map {
-            case s"fold along x=$x" => Fold.X(x.toInt)
-            case s"fold along y=$y" => Fold.Y(y.toInt)
-            case s                  => throw new IllegalArgumentException(s"unrecognized fold $s")
-          }
+          val points = head
+            .splitTrim("""\n""")
+            .map:
+              case s"$x,$y" => Point(x.toInt, y.toInt)
+              case s        => throw new IllegalArgumentException(s"unrecognized point $s")
+          val folds = tail
+            .splitTrim("""\n""")
+            .map:
+              case s"fold along x=$x" => Fold.X(x.toInt)
+              case s"fold along y=$y" => Fold.Y(y.toInt)
+              case s                  => throw new IllegalArgumentException(s"unrecognized fold $s")
           Right(Paper(points.toSet, folds))
         case _ => Left("not a paper")
     catch case NonFatal(e) => Left(e.getMessage.nn)

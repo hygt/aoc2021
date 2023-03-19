@@ -1,0 +1,33 @@
+plugins {
+    id 'scala'
+    id 'cz.alenkacz.gradle.scalafmt' version '1.16.2'
+}
+
+repositories {
+    mavenCentral()
+}
+
+tasks.withType(ScalaCompile) {
+    scalaCompileOptions.additionalParameters = [
+        '-language:existentials,experimental.macros,higherKinds,implicitConversions,postfixOps',
+        '-deprecation',
+        '-feature',
+        '-Ykind-projector',
+        '-Wunused:imports,params',
+        '-source', 'future'
+        // '-rewrite', '-indent'
+        ]
+}
+
+ext {
+    scalaVersion = '3.3.0-RC3'
+}
+
+dependencies {
+    implementation "org.scala-lang:scala3-library_3:$scalaVersion"
+    implementation 'org.scalanlp:breeze_3:2.0'
+    implementation 'org.typelevel:cats-core_3:2.9.0'
+    implementation 'org.typelevel:cats-parse_3:0.3.9'
+    testImplementation 'org.scalameta:munit_3:1.0.0-M7'
+}
+

@@ -39,14 +39,13 @@ object Day10:
       else if opening(c) then (stack :+ c, None)
       else if c != matching(stack.last) then (stack, Some(c))
       else (stack.dropRight(1), None)
-    } match {
+    } match
       case (_, Some(c))                    => Corrupt(c)
       case (stack, None) if stack.nonEmpty => Incomplete(stack.reverse.map(matching))
       case _                               => throw new IllegalStateException("no input should be valid")
-    }
 
   enum Status(val score: Long):
-    case Corrupt(c: Char) extends Status(points1(c))
+    case Corrupt(c: Char)               extends Status(points1(c))
     case Incomplete(missing: Seq[Char]) extends Status(points2(missing))
 
   def solve1(lines: Seq[String]): Long =

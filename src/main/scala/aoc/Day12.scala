@@ -55,13 +55,14 @@ object Day12:
 
   given Decoder[Graph] with
     def decode(s: String): Either[String, Graph] = try
-      val edges = s.splitTrim("""\n""").foldMap {
-        case s"$x-$y" =>
-          Map(
-            Node(x) -> Set(Node(y)),
-            Node(y) -> Set(Node(x))
-          )
-        case line => throw new IllegalArgumentException(s"unrecognized edge $line")
-      }
+      val edges = s
+        .splitTrim("""\n""")
+        .foldMap:
+          case s"$x-$y" =>
+            Map(
+              Node(x) -> Set(Node(y)),
+              Node(y) -> Set(Node(x))
+            )
+          case line => throw new IllegalArgumentException(s"unrecognized edge $line")
       Right(edges)
     catch case NonFatal(e) => Left(e.getMessage.nn)

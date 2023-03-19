@@ -40,10 +40,9 @@ object Day18:
       case Val(v)            => v
       case Pair(left, right) => 3 * left.magnitude + 2 * right.magnitude
 
-    private def pushdown(n: Nested, lv: Int, rv: Int): Nested = n match {
+    private def pushdown(n: Nested, lv: Int, rv: Int): Nested = n match
       case Pair(left, right) => Pair(pushdown(left, lv, 0), pushdown(right, 0, rv))
       case Val(v)            => Val(v + lv + rv)
-    }
 
     private def inorder(n: Nested, level: Int): (Nested, Option[(Int, Int)]) = n match
       case p @ Pair(Val(vl), Val(vr)) =>

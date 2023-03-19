@@ -13,10 +13,9 @@ object Day03:
 
   private object Counter:
     def apply(diag: Diag): Counter =
-      diag.map {
+      diag.map:
         case '1' => 1
         case '0' => -1
-      }
 
   private given Monoid[Counter] with
     val empty: Counter = IndexedSeq.empty

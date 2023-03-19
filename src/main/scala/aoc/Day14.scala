@@ -35,7 +35,7 @@ object Day14:
       counts.max - counts.min
 
     def run(n: Int): Long =
-      val pairset = (1 to n).foldLeft(PairSet(sequence)) { (prev, i) =>
+      val pairset = (1 to n).foldLeft(PairSet(sequence)) { (prev, _) =>
         prev.toSeq.foldMap { case (pair, count) =>
           val c = pairs(pair)
           Map(Pair(pair.head, c) -> count, Pair(c, pair.last) -> count)
@@ -53,13 +53,12 @@ object Day14:
           assert(head.nonEmpty)
           val pairs = tail
             .splitTrim("""\n""")
-            .map {
+            .map:
               case s"$s -> $c" =>
                 assert(s.length == 2)
                 assert(c.length == 1)
                 Pair(s) -> c(0)
               case s => throw new IllegalArgumentException(s"unrecognized mapping $s")
-            }
             .toMap
           Right(Polymer(head, pairs))
         case _ => Left("not a polymer template")
@@ -89,7 +88,7 @@ object Day14:
       }
 
     def run(n: Int): PairSet =
-      val fold = (1 to n).foldLeft(vector)((acc, i) => matrix * acc)
+      val fold = (1 to n).foldLeft(vector)((acc, _) => matrix * acc)
       fold.toScalaVector.zipWithIndex.foldMap { (count, i) =>
         Map(i2p(i) -> count)
       }
